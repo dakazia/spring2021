@@ -20,7 +20,10 @@ namespace WindowsFormsApp
         private void Submit_Click(object sender, EventArgs e)
         {
             string name = this.textBox1.Text;
-            MessageBox.Show($"Hello, {name}!", "Greeting");
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) 
+                MessageBox.Show("Sorry, repeat input", "Error");
+            else 
+                MessageBox.Show($"Hello, {name}!", "Greeting");
         }
     }
 }

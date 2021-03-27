@@ -12,8 +12,15 @@ namespace ConsoleApp
 
         private static string Introduce()
         {
-            Console.WriteLine("Please, introduce yourself:");
-            return Console.ReadLine();
+            string name;
+            do
+            {
+                Console.WriteLine("Please, introduce yourself:");
+                name = Console.ReadLine();
+
+            } while (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name));
+
+            return name;
         }
 
         private static void Greet(string name)
