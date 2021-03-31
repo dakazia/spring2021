@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="TimeGreeting">
-      <HintPath>..\ClassLibrary\bin\Debug\netstandard2.0\TimeGreeting.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ClassLibrary\TimeGreeting.csproj" />
   </ItemGroup>
 
 </Project>
