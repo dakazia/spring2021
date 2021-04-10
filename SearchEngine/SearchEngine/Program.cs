@@ -1,5 +1,6 @@
 ﻿using System;
-using
+using System.Collections.Generic;
+using FileSystem;
 
 namespace SearchEngine
 {
@@ -7,13 +8,11 @@ namespace SearchEngine
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
+            string path = @"c:\Disk\English";
 
-            var path = args[0];
-            //var path = @"c:\Disk\English";
-
-            var fileSystemVisitor = new FileSystemVisitor();
-            var fileSystemEntry = fileSystemVisitor.FileSystemScan(path);
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor();
+            IEnumerable<string> fileSystemItem = fileSystemVisitor.FileSystemScan(path);
         }
     }
 }
