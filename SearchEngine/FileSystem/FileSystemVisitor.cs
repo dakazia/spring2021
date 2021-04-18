@@ -9,39 +9,28 @@ namespace FileSystem
         private bool _scan;
         private readonly Predicate<FileSystemItem>[] _filters;
 
-        public FileSystemVisitor()
+        public FileSystemVisitor(Predicate<FileSystemItem>[] filters)
         {
-            _filters = new Predicate<FileSystemItem>[] { };
+            _filters = filters ?? throw new ArgumentNullException(nameof(filters));
         }
 
         public IEnumerable<string> FileSystemScan(string path)
         {
-            if (!Directory.Exists(path))
-            {
-                //Event message ("Path do not exists.");
-
-                yield break;
-            }
-
             //Event message ("Scan started.");
             _scan = true;
 
             foreach (var directory in GetFileSystemItem(GetDirectories, path, "directory"))
             {
                 yield return directory;
-            }
 
+            }
             foreach (var file in GetFileSystemItem(GetFiles, path, "file"))
             {
                 yield return file;
             }
 
-            // Event message ("Scan finished.");
-        }
 
-        public void StopScan()
-        {
-            _scan = false;
+            // Event message ("Scan finished.");
         }
 
         private IEnumerable<string> GetFileSystemItem(Func<string, IEnumerable<string>> getItemMethod, string path, string itemName)
@@ -88,9 +77,9 @@ namespace FileSystem
                     }
                 }
 
-                catch (UnauthorizedAccessException uAEx)
+                catch (UnauthorizedAccessException UAEx)
                 {
-                    // Event message (uAEx.Message);
+                    // Event message (UAEx.Message);
                 }
 
                 catch (Exception e)
@@ -107,7 +96,33 @@ namespace FileSystem
 
         private bool UseFilter(string searchResult)
         {
-            throw new NotImplementedException();
+            FileSystemItem item = new FileSystemItem();
+
+            FileAttributes attributes = File.GetAttributes(searchResult);
+
+            if (!attributes.HasFlag(FileAttributes.Directory))
+            {
+                try
+                {
+                    item.Name = Path.GetFileName(searchResult);
+                    item.Type = File.ReadAllText(searchResult);
+                }
+                catch (IOException iOEx)
+                {
+                    // Event message (iOEx.Message);
+                    return false;
+                }
+            }
+
+            foreach (var filter in _filters)
+            {
+                if (!filter(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
