@@ -7,9 +7,10 @@ namespace FileSystem
     public class FileSystemVisitor
     {
         private bool _scan;
-        private readonly Predicate<FileSystemItem>[] _filters;
+        private readonly Predicate<FileSystemItem> _filters;
 
-        public FileSystemVisitor(Predicate<FileSystemItem>[] filters)
+        public FileSystemVisitor() { }
+        public FileSystemVisitor(Predicate<FileSystemItem> filters)
         {
             _filters = filters ?? throw new ArgumentNullException(nameof(filters));
         }
@@ -39,7 +40,7 @@ namespace FileSystem
             {
                 //Event message ($"{Name??} found.");
 
-                if (_filters.Length == 0)
+                if (_filters is null)
                 {
                     yield return searchResult;
                 }
@@ -114,13 +115,13 @@ namespace FileSystem
                 }
             }
 
-            foreach (var filter in _filters)
-            {
-                if (!filter(item))
-                {
-                    return false;
-                }
-            }
+            //foreach (var filter in _filters)
+            //{
+            //    if (!filter(item))
+            //    {
+            //        return false;
+            //    }
+            //}
 
             return true;
         }

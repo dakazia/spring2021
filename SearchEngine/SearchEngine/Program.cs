@@ -29,9 +29,9 @@ namespace SearchEngine
             Console.ReadKey();
         }
 
-        private static Predicate<FileSystemItem>[] GetScanFilters()
+        private static Predicate<FileSystemItem> GetScanFilters()
         {
-            var filters = new List<Predicate<FileSystemItem>>();
+            Predicate<FileSystemItem> filters = default;
 
             string searchOption;
             do
@@ -51,7 +51,7 @@ namespace SearchEngine
                 
                 if (!string.IsNullOrEmpty(typeFilter))
                 {
-                    filters.Add(item => item.Type.Contains(typeFilter, StringComparison.InvariantCulture));
+                    filters += item => item.Type.Contains(typeFilter, StringComparison.InvariantCulture);
                 }
 
                 Console.WriteLine("Enter name of file:");
@@ -59,11 +59,11 @@ namespace SearchEngine
 
                 if (!string.IsNullOrEmpty(nameFilter))
                 {
-                    filters.Add(item => item.Name.Contains(nameFilter, StringComparison.InvariantCulture));
+                    filters += item => item.Name.Contains(nameFilter, StringComparison.InvariantCulture);
                 }
             }
             
-            return filters.ToArray();
+            return filters;
         }
     }
 }
