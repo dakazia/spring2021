@@ -13,7 +13,7 @@ namespace SearchEngine
             do
             {
                 Console.WriteLine(@"Please enter a correct path (for example c:\Windows):");
-                path = @"c:\Disk\English";
+                path = @"c:\Disk\Books\";
                 //path = Console.ReadLine();
 
             } while (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path) || !Directory.Exists(path));
@@ -26,6 +26,7 @@ namespace SearchEngine
                 Console.WriteLine(item);
             }
 
+            Console.WriteLine("Finish");
             Console.ReadKey();
         }
 

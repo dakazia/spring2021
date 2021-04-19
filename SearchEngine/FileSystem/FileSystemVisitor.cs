@@ -29,9 +29,6 @@ namespace FileSystem
             {
                 yield return file;
             }
-
-
-            // Event message ("Scan finished.");
         }
 
         private IEnumerable<string> GetFileSystemItem(Func<string, IEnumerable<string>> getItemMethod, string path, string itemName)
@@ -47,15 +44,15 @@ namespace FileSystem
                 {
                     item.Name = Path.GetFileName(searchResult);
                     item.Type = File.ReadAllText(searchResult);
-                }
 
-                if (_filters is null)
-                {
-                    yield return searchResult;
-                }
-                else if (!_filters(item))
-                {
-                    continue;
+                    if (_filters is null)
+                    {
+                        yield return searchResult;
+                    }
+                    else if (!_filters(item))
+                    {
+                        continue;
+                    }
                 }
 
                 yield return searchResult;
