@@ -12,7 +12,7 @@ namespace FileSystem
         public FileSystemVisitor() { }
         public FileSystemVisitor(Predicate<FileSystemItem> filters)
         {
-            _filters = filters ?? throw new ArgumentNullException(nameof(filters));
+            _filters = filters;
         }
 
         public IEnumerable<string> FileSystemScan(string path)
@@ -40,15 +40,25 @@ namespace FileSystem
             {
                 //Event message ($"{Name??} found.");
 
+                FileSystemItem item = new FileSystemItem();
+                FileAttributes attributes = File.GetAttributes(searchResult);
+
+                if (!attributes.HasFlag(FileAttributes.Directory))
+                {
+                    item.Name = Path.GetFileName(searchResult);
+                    item.Type = File.ReadAllText(searchResult);
+                }
+
                 if (_filters is null)
                 {
                     yield return searchResult;
                 }
-                else if (UseFilter(searchResult))
+                else if (!_filters(item))
                 {
-                    // Event message ($"Filtered {itemName} found.");
-                    yield return searchResult;
+                    continue;
                 }
+
+                yield return searchResult;
             }
         }
 
@@ -94,37 +104,5 @@ namespace FileSystem
                 }
             }
         }
-
-        private bool UseFilter(string searchResult)
-        {
-            FileSystemItem item = new FileSystemItem();
-
-            FileAttributes attributes = File.GetAttributes(searchResult);
-
-            if (!attributes.HasFlag(FileAttributes.Directory))
-            {
-                try
-                {
-                    item.Name = Path.GetFileName(searchResult);
-                    item.Type = File.ReadAllText(searchResult);
-                }
-                catch (IOException iOEx)
-                {
-                    // Event message (iOEx.Message);
-                    return false;
-                }
-            }
-
-            //foreach (var filter in _filters)
-            //{
-            //    if (!filter(item))
-            //    {
-            //        return false;
-            //    }
-            //}
-
-            return true;
-        }
     }
-
 }
