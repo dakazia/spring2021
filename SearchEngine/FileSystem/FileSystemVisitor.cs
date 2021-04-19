@@ -49,13 +49,15 @@ namespace FileSystem
                     {
                         yield return searchResult;
                     }
-                    else if (!_filters(item))
+                    else if (_filters(item))
                     {
-                        continue;
+                        yield return searchResult;
                     }
                 }
-
-                yield return searchResult;
+                else
+                {
+                    yield return searchResult;
+                }
             }
         }
 
