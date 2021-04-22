@@ -10,18 +10,20 @@ namespace FileSystem
         private readonly Predicate<FileSystemItem> _filters;
         public event EventHandler<SearchStatusEventArgs> SearchStatus;
 
-        public FileSystemVisitor(Predicate<FileSystemItem> filters)
+      public FileSystemVisitor((string type, string name) customSearch)
         {
-            _filters = filters;
+            var _customSearch = customSearch;
+
+            if (!string.IsNullOrEmpty(_customSearch.type))
+            {
+                _filters += item => item.Type.Contains(_customSearch.type);
+            }
+
+            if (!string.IsNullOrEmpty(_customSearch.name))
+            {
+                _filters += item => item.Name.Contains(_customSearch.name);
+            }
         }
-
-        //public FileSystemVisitor(List<string> customSearch) : this(filters)
-        //{
-        //    foreach (var item in customSearch)
-        //    {
-
-        //    }
-        //}
 
         public IEnumerable<string> FileSystemScan(string path)
         {

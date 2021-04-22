@@ -79,41 +79,41 @@ namespace SearchEngine
             Console.ResetColor();
         }
 
-        private static Predicate<FileSystemItem> GetScanFilters()
-        {
-            Predicate<FileSystemItem> filters = default;
-            string searchOption;
+        //private static Predicate<FileSystemItem> GetScanFilters()
+        //{
+        //    Predicate<FileSystemItem> filters = default;
+        //    string searchOption;
 
-            do
-            {
-                Console.WriteLine("Please enter correct search criteria:" + "\n" +
-                                  "1 - Display all files in a directory." + "\n" +
-                                  "2 - Use custom search.");
-                searchOption = Console.ReadLine();
+        //    do
+        //    {
+        //        Console.WriteLine("Please enter correct search criteria:" + "\n" +
+        //                          "1 - Display all files in a directory." + "\n" +
+        //                          "2 - Use custom search.");
+        //        searchOption = Console.ReadLine();
 
-            } while (!searchOption.Equals("1") && !searchOption.Equals("2"));
+        //    } while (!searchOption.Equals("1") && !searchOption.Equals("2"));
 
-            if (searchOption.Equals("2"))
-            {
-                Console.WriteLine("Please enter your search criteria:" + "\n" +
-                                  "type of file:");
-                string typeFilter = Console.ReadLine();
+        //    if (searchOption.Equals("2"))
+        //    {
+        //        Console.WriteLine("Please enter your search criteria:" + "\n" +
+        //                          "type of file:");
+        //        string typeFilter = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(typeFilter))
-                {
-                    filters += item => item.Type.Contains(typeFilter, StringComparison.InvariantCulture);
-                }
+        //        if (!string.IsNullOrEmpty(typeFilter))
+        //        {
+        //            filters += item => item.Type.Contains(typeFilter, StringComparison.InvariantCulture);
+        //        }
 
-                Console.WriteLine("name of file:");
-                string nameFilter = Console.ReadLine();
+        //        Console.WriteLine("name of file:");
+        //        string nameFilter = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(nameFilter))
-                {
-                    filters += item => item.Name.Contains(nameFilter, StringComparison.InvariantCulture);
-                }
-            }
+        //        if (!string.IsNullOrEmpty(nameFilter))
+        //        {
+        //            filters += item => item.Name.Contains(nameFilter, StringComparison.InvariantCulture);
+        //        }
+        //    }
 
-            return filters;
-        }
+        //    return filters;
+        //}
     }
 }
