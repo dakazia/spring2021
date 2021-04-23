@@ -12,16 +12,16 @@ namespace FileSystem
 
       public FileSystemVisitor((string type, string name) customSearch)
         {
-            var _customSearch = customSearch;
+            var (type, name) = customSearch;
 
-            if (!string.IsNullOrEmpty(_customSearch.type))
+            if (!string.IsNullOrEmpty(type))
             {
-                _filters += item => item.Type.Contains(_customSearch.type);
+                _filters += item => item.Type.Contains(type);
             }
 
-            if (!string.IsNullOrEmpty(_customSearch.name))
+            if (!string.IsNullOrEmpty(name))
             {
-                _filters += item => item.Name.Contains(_customSearch.name);
+                _filters += item => item.Name.Contains(name);
             }
         }
 
@@ -67,7 +67,7 @@ namespace FileSystem
                         yield return searchResult;
                     }
                 }
-                else
+                else if (_filters is null)
                 {
                     ShowSearchStatusEvent($"{itemName} found:");
                     yield return searchResult;
