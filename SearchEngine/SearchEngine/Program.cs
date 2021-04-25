@@ -10,7 +10,7 @@ namespace SearchEngine
         private const string TimeOutputFormat = "HH:mm:ss.fff";
         private static (string type, string name) _customSearch;
 
-        static void Main(string[] args)
+        public static void Main()
         {
             string repeatSearch;
 
@@ -28,7 +28,7 @@ namespace SearchEngine
 
                 GetSearchOption(ref _customSearch);
 
-                FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(_customSearch);
+                FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(GetScanFilters());
                 IEnumerable<string> fileSystemItem = fileSystemVisitor.FileSystemScan(path);
                 fileSystemVisitor.SearchStatus += SearchStatus;
 
@@ -45,6 +45,23 @@ namespace SearchEngine
             Console.WriteLine("\nAlgorithm finished");
 
             Console.ReadKey();
+        }
+
+        private static Predicate<FileSystemItem> GetScanFilters()
+        {
+            Predicate<FileSystemItem> filters = default;
+
+            if (!string.IsNullOrEmpty(_customSearch.type))
+            {
+                filters += item => item.Type.Contains(_customSearch.type);
+            }
+
+            if (!string.IsNullOrEmpty(_customSearch.name))
+            {
+                filters += item => item.Name.Contains(_customSearch.name);
+            }
+
+            return filters;
         }
 
         private static void GetSearchOption(ref (string type, string name) customSearch)
