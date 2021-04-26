@@ -7,14 +7,14 @@ namespace FileSystem
     public sealed class FileSystemVisitor
     {
         private bool _scan;
-        private readonly Predicate<FileSystemItem> _filters;
+       private readonly Predicate<FileSystemItem> _filters;
         public event EventHandler<SearchStatusEventArgs> Start;
         public event EventHandler<SearchStatusEventArgs> Finish;
         public event EventHandler<SearchStatusEventArgs> ErrorAppears;
         public event EventHandler<SearchStatusEventArgs> FileFound;
         public event EventHandler<SearchStatusEventArgs> DirectoryFound;
         public event EventHandler<SearchStatusEventArgs> FilteredFileFound;
-        
+
         public FileSystemVisitor(Predicate<FileSystemItem> filters)
         {
             _filters = filters;
@@ -70,19 +70,28 @@ namespace FileSystem
             }
         }
 
-        private IEnumerable<string> GetDirectories(string path)
+        private void GetDirectories(string path, out IEnumerable<string> iterator)
         {
-            var directories = Directory.EnumerateDirectories(path, "*.*", SearchOption.AllDirectories);
-            return SkipUnauthorizedIterator(directories);
+            var directories = Directory.EnumerateDirectories(path, "*.*");
+
+            iterator= SkipUnauthorizedIterator(directories, path);
+
+            DirectoryInfo rootDir = new DirectoryInfo(path);
+            DirectoryInfo[] subDirs = rootDir.GetDirectories();
+            foreach (DirectoryInfo dirInfo in subDirs)
+            {
+                Console.WriteLine(dirInfo.FullName);
+                GetDirectories(dirInfo.FullName, out iterator);
+            }
         }
 
         private IEnumerable<string> GetFiles(string path)
         {
-            var files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories);
-            return SkipUnauthorizedIterator(files);
+            var files = Directory.EnumerateFiles(path, "*.*");
+            return SkipUnauthorizedIterator(files, path);
         }
 
-        private IEnumerable<T> SkipUnauthorizedIterator<T>(IEnumerable<T> iEnumerable)
+        private IEnumerable<T> SkipUnauthorizedIterator<T>(IEnumerable<T> iEnumerable, string path)
         {
             var iterator = iEnumerable.GetEnumerator();
 
@@ -108,9 +117,13 @@ namespace FileSystem
 
                 if (iterator.Current != null)
                 {
-                    yield return iterator.Current;
+
+                  yield return iterator.Current;
                 }
+
+
             }
+
         }
 
         private void ShowStartEvent(string message)
