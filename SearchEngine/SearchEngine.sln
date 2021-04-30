@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine", "SearchEngin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSystem", "FileSystem\FileSystem.csproj", "{CA12FA52-6ADA-4A70-BB49-E9BE25BB56B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.Tests", "SearchEngine.Tests\SearchEngine.Tests.csproj", "{D30832F9-FADA-4BD1-BAF3-9534DD0E33DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchEngine.Tests", "SearchEngine.Tests\SearchEngine.Tests.csproj", "{D30832F9-FADA-4BD1-BAF3-9534DD0E33DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -17,7 +17,7 @@ namespace SearchEngine
             do
             {
                 Console.WriteLine(@"Please enter a correct path (for example c:\Windows):");
-                var path = @"c:\Disk\Books\";
+                var path = @"c:\Users\Yulya_Davydova\AppData\Local\Temp\Test\";
                 //var path = Console.ReadLine();
 
                 while (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
@@ -31,13 +31,11 @@ namespace SearchEngine
                 FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(GetScanFilters());
                 IEnumerable<string> fileSystemItem = fileSystemVisitor.FileSystemScan(path);
                 fileSystemVisitor.Start += Start;
-                fileSystemVisitor.AbortSearch += AbortSearch;
-                fileSystemVisitor.SkipFile += SkipFile;
-                fileSystemVisitor.FileFound += FileFound;
-                fileSystemVisitor.Finish += Finish;
                 fileSystemVisitor.DirectoryFound += DirectoryFound;
+                fileSystemVisitor.FileFound += FileFound;
                 fileSystemVisitor.FilteredFileFound += FilteredFileFound;
-                
+                fileSystemVisitor.Finish += Finish;
+
 
                 foreach (var item in fileSystemItem)
                 {
@@ -98,6 +96,19 @@ namespace SearchEngine
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine(e.FoundTime.ToString(TimeOutputFormat) + ": " + e.ItemName);
+
+            if (e.ItemName.Contains("SkipCriteria"))
+            {
+                e.ShouldSkipItem = true;
+                Console.WriteLine($"File : { e.ItemName } is skipped");
+            }
+
+            if (e.ItemName.Contains("AbortCriteria"))
+            {
+                e.ShouldAbortSearch = true;
+                Console.WriteLine($" Search will be abort due to file: {e.ItemName}");
+            }
+
             Console.ResetColor();
         }
 
@@ -126,31 +137,20 @@ namespace SearchEngine
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine(e.FoundTime.ToString(TimeOutputFormat) + ": " + e.ItemName);
-            Console.ResetColor();
-        }
 
-        private static void SkipFile(object sender, SearchInterruptEventArgs args)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            if (args.Name.Contains("Полный"))
+            if (e.ItemName.Contains("SkipCriteria"))
             {
-                args.ShouldSkipItem = true;
-                Console.WriteLine($"File : { args.Name } is skipped");
+                e.ShouldSkipItem = true;
+                Console.WriteLine($"Directory : { e.ItemName } is skipped");
             }
 
-            Console.ResetColor();
-        }
-
-        private static void AbortSearch(object sender, SearchInterruptEventArgs args)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            if (args.Name.Contains("2021"))
+            if (e.ItemName.Contains("AbortCriteria"))
             {
-                args.ShouldAbortSearch = true;
-                Console.WriteLine($" Search is abort due to file: {args.Name}");
+                e.ShouldAbortSearch = true;
+                Console.WriteLine($" Search will be abort due to directory: {e.ItemName}");
             }
-
             Console.ResetColor();
+
         }
     }
 }

@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace FileSystem
 {
-    public sealed class FileSystemVisitor
+    public class FileSystemVisitor
     {
-        private  int _node = 6; // number of inner catalogs
+        private int _node = 10; // number of inner catalogs
         private readonly Predicate<FileSystemItem> _filters;
         public event EventHandler<SearchStatusEventArgs> Start;
         public event EventHandler<SearchStatusEventArgs> Finish;
         public event EventHandler<SearchStatusEventArgs> FileFound;
         public event EventHandler<SearchStatusEventArgs> DirectoryFound;
         public event EventHandler<SearchStatusEventArgs> FilteredFileFound;
-        public event EventHandler<SearchInterruptEventArgs> AbortSearch;
-        public event EventHandler<SearchInterruptEventArgs> SkipFile;
+
 
         public FileSystemVisitor(Predicate<FileSystemItem> filters)
         {
@@ -25,13 +23,12 @@ namespace FileSystem
         public IEnumerable<string> FileSystemScan(string path)
         {
             ShowStartEvent("Scan started.");
-        
+
             foreach (var directory in GetFileSystemItem(GetElements, path))
             {
                 yield return directory;
-
             }
-            
+
             ShowFinishEvent("Scan finished.");
         }
 
@@ -50,12 +47,28 @@ namespace FileSystem
 
                     if (_filters is null)
                     {
-                        ShowFileFoundEvent(("File found:"));
-                        yield return searchResult;
+                        var args = new SearchStatusEventArgs()
+                        {
+                            ItemName = "File found:" + " " + item.Name,
+                            FoundTime = DateTime.Now
+                        };
+
+                        OnFileFound(args);
+
+                        if (args.ShouldAbortSearch)
+                        {
+                            yield break;
+                        }
+                        if (!args.ShouldSkipItem)
+                        {
+                            yield return searchResult;
+                        }
+                        
                     }
                     else if (_filters(item))
                     {
                         ShowFilteredFileFoundEvent($"Filtered file found:");
+
                         yield return searchResult;
                     }
                 }
@@ -69,81 +82,41 @@ namespace FileSystem
 
         private IEnumerable<string> GetElements(string path)
         {
-            var files = Directory.EnumerateFiles(path, "*.*");
-
+            var files = GetFiles(path);
             foreach (var file in files)
             {
-                var result = CheckingCriteriaInterruption(file);
-
-                bool skipItem = ShouldSkipSearch(result);
-                bool abortSearch = ShouldAbortSearch(result);
-
-                if (!skipItem)
-                {
-                    yield return file;
-                }
-
-                if (abortSearch)
-                {
-                    yield break;
-                }
-
+                
+                
+                yield return file;
             }
 
-            var directories = Directory.EnumerateDirectories(path, "*.*");
+            var directories = GetDirectories(path);
 
             foreach (var directory in directories)
             {
                 yield return directory;
 
                 bool continueSearch = _node > 0;
-               
+
                 if (continueSearch)
                 {
                     foreach (var item in GetElements(directory))
                     {
-                        
                         yield return item;
                         _node--;
                     }
                 }
             }
         }
-        private static bool ShouldSkipSearch(SearchInterruptEventArgs args)
+
+        public virtual IEnumerable<string> GetFiles(string path)
         {
-            if (args.Name.Contains("SkipCriteria"))
-            {
-                args.ShouldSkipItem = true;
-                Console.WriteLine($"File : { args.Name } is skipped");
-            }
-            return args.ShouldSkipItem;
+            return Directory.EnumerateFiles(path, "*.*");
         }
 
-        private static bool ShouldAbortSearch(SearchInterruptEventArgs args)
+        public virtual IEnumerable<string> GetDirectories(string path)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            if (args.Name.Contains("AbortCriteria"))
-            {
-                args.ShouldAbortSearch = true;
-                Console.WriteLine($" Search will be abort due to file: {args.Name}");
-            }
-
-            return args.ShouldAbortSearch;
-        }
-
-        private SearchInterruptEventArgs CheckingCriteriaInterruption(string file)
-        {
-            if (string.IsNullOrWhiteSpace(file))
-            {
-                throw new ArgumentException($"'{nameof(file)}' cannot be null or whitespace", nameof(file));
-            }
-
-            var args = new SearchInterruptEventArgs(file)
-            {
-                Name = file
-            };
-
-            return args;
+            return Directory.EnumerateDirectories(path, "*.*");
         }
 
         private void ShowStartEvent(string message)
@@ -158,6 +131,7 @@ namespace FileSystem
                 ItemName = message,
                 FoundTime = DateTime.Now
             };
+
             OnStart(args);
         }
 
@@ -174,6 +148,7 @@ namespace FileSystem
                 ItemName = message,
                 FoundTime = DateTime.Now
             };
+
             OnFinish(args);
         }
 
@@ -190,24 +165,10 @@ namespace FileSystem
                 ItemName = message,
                 FoundTime = DateTime.Now
             };
+
             OnDirectoryFound(args);
         }
-
-        private void ShowFileFoundEvent(string message)
-        {
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                throw new ArgumentException($"'{nameof(message)}' cannot be null or whitespace", nameof(message));
-            }
-
-            var args = new SearchStatusEventArgs()
-            {
-                ItemName = message,
-                FoundTime = DateTime.Now
-            };
-            OnFileFound(args);
-        }
-
+        
         private void ShowFilteredFileFoundEvent(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
@@ -249,18 +210,6 @@ namespace FileSystem
         private void OnFilteredFileFound(SearchStatusEventArgs e)
         {
             EventHandler<SearchStatusEventArgs> handler = FilteredFileFound;
-            handler?.Invoke(this, e);
-        }
-
-        private void OnAbortSearch(SearchInterruptEventArgs e)
-        {
-            EventHandler<SearchInterruptEventArgs> handler = AbortSearch;
-            handler?.Invoke(this, e);
-        }
-
-        private void OnSkipFile(SearchInterruptEventArgs e)
-        {
-            EventHandler<SearchInterruptEventArgs> handler = SkipFile;
             handler?.Invoke(this, e);
         }
     }

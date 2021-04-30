@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using FileSystem;
 using Moq;
@@ -9,26 +11,98 @@ namespace SearchEngine.Tests
 
     public class SearchTests
     {
-        private Mock<DirectoryInfo> _fileSystemInfo;
-        private FileSystemVisitor _visitor;
-        FileInfo[] _files;
-        DirectoryInfo[] _directories;
-        string _path;
 
-
-        [SetUp]
-        public void Setup()
+        [TestFixture]
+        public class DirectoryTest
         {
-            _fileSystemInfo = new Mock<DirectoryInfo>();
-            _directories = new DirectoryInfo[3];
-            _files = new FileInfo[] { };
-            _fileSystemInfo
-                .Setup(item => item.GetDirectories())
-                .Returns(_directories);
-            _fileSystemInfo
-                .Setup(item => item.GetFiles())
-                .Returns(_files);
+            private readonly string testFolderPath =
+                Path.GetTempPath();
 
+            private List<string> expectedDirs =
+                new List<string>();
+
+            private List<string> expectedFiles =
+                new List<string>();
+
+            static private string MakePath(
+                params string[] tokens)
+            {
+                string fullpath = "";
+                foreach (string token in tokens)
+                {
+                    fullpath = Path.Combine(fullpath, token);
+                }
+
+                return fullpath;
+            }
+
+            [SetUp]
+            public void Setup()
+            {
+                Directory.CreateDirectory(testFolderPath);
+
+                string[] testDirs =
+                {
+                    MakePath(testFolderPath, "Test"),
+                    MakePath(testFolderPath, "Test", "dir1"),
+                    MakePath(testFolderPath, "Test", "dir1", "dir2"),
+                    MakePath(testFolderPath, "Test", "dir1", "dir2", "dir3")
+                };
+
+                foreach (string dir in testDirs)
+                {
+                    expectedDirs.Add(dir);
+                    Directory.CreateDirectory(dir);
+                }
+
+                expectedDirs.Sort();
+
+                string[] testFiles =
+                {
+                    MakePath(testFolderPath, "Test", "dir1",
+                        "file1.txt"),
+                    MakePath(testFolderPath, "Test", "dir1",
+                        "file2.txt"),
+                    MakePath(testFolderPath, "Test", "dir1",
+                        "dir2", "file3.txt"),
+                    MakePath(testFolderPath, "Test", "dir1",
+                        "dir2", "file4.txt")
+                };
+                foreach (string file in testFiles)
+                {
+                    expectedFiles.Add(file);
+                    FileStream str = File.Create(file);
+                    str.Close();
+                }
+
+                expectedFiles.Sort();
+            }
+
+            [Test]
+            public void VisitDirectory()
+            {
+                string testPath = Path.Combine(
+                    testFolderPath, "Test");
+                Predicate<FileSystemItem> filters = null;
+
+                FileSystemVisitor visitor = new FileSystemVisitor(filters);
+                var collection = visitor.FileSystemScan(testPath);
+
+
+                Assert.AreEqual(
+                    expectedDirs, collection);
+                Assert.AreEqual(
+                    expectedFiles, collection);
+            }
+
+            [TearDown]
+            public void TearDown()
+            {
+                Directory.Delete(
+                    testFolderPath + "Test", true);
+            }
         }
+
     }
 }
+    
