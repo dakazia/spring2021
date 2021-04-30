@@ -24,6 +24,9 @@ namespace SearchEngine.Tests
             private List<string> expectedFiles =
                 new List<string>();
 
+            private List<string> expectedCollection =
+                new List<string>();
+
             static private string MakePath(
                 params string[] tokens)
             {
@@ -43,7 +46,6 @@ namespace SearchEngine.Tests
 
                 string[] testDirs =
                 {
-                    MakePath(testFolderPath, "Test"),
                     MakePath(testFolderPath, "Test", "dir1"),
                     MakePath(testFolderPath, "Test", "dir1", "dir2"),
                     MakePath(testFolderPath, "Test", "dir1", "dir2", "dir3")
@@ -56,17 +58,13 @@ namespace SearchEngine.Tests
                 }
 
                 expectedDirs.Sort();
-
+             
                 string[] testFiles =
                 {
-                    MakePath(testFolderPath, "Test", "dir1",
-                        "file1.txt"),
-                    MakePath(testFolderPath, "Test", "dir1",
-                        "file2.txt"),
-                    MakePath(testFolderPath, "Test", "dir1",
-                        "dir2", "file3.txt"),
-                    MakePath(testFolderPath, "Test", "dir1",
-                        "dir2", "file4.txt")
+                    MakePath(testFolderPath, "Test", "dir1", "file1.txt"),
+                    MakePath(testFolderPath, "Test", "dir1", "file2.txt"),
+                    MakePath(testFolderPath, "Test", "dir1", "dir2", "file3.txt"),
+                    MakePath(testFolderPath, "Test", "dir1", "dir2", "file4.txt")
                 };
                 foreach (string file in testFiles)
                 {
@@ -83,16 +81,19 @@ namespace SearchEngine.Tests
             {
                 string testPath = Path.Combine(
                     testFolderPath, "Test");
-                Predicate<FileSystemItem> filters = null;
+                Predicate<FileSystemItem> filters = default;
+
+                filters += item => item.Type.Contains("file");
+                filters += item => item.Name.Contains("file");
 
                 FileSystemVisitor visitor = new FileSystemVisitor(filters);
-                var collection = visitor.FileSystemScan(testPath);
-
+                IEnumerable<string> collection = visitor.FileSystemScan(testPath);
+                List<string> collectionSort = collection.ToList();
+                collectionSort.Sort();
 
                 Assert.AreEqual(
-                    expectedDirs, collection);
-                Assert.AreEqual(
-                    expectedFiles, collection);
+                    expectedFiles, collectionSort);
+
             }
 
             [TearDown]
@@ -105,4 +106,4 @@ namespace SearchEngine.Tests
 
     }
 }
-    
+
