@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using FileSystem;
-using Moq;
 using NUnit.Framework;
 using System.Linq;
 
@@ -16,10 +15,11 @@ namespace SearchEngine.Tests
 
         private string testPath = Path.Combine(testFolderPath, "Test");
 
+        private const int CountFilteredFile = 1;
 
         private List<string> expectedCollection = new List<string>();
 
-        private static string MakePath(params string[] tokens)
+        private static string MakePath(params string[] tokens) 
         {
             string fullpath = "";
 
@@ -80,7 +80,7 @@ namespace SearchEngine.Tests
             collectionSort.Sort();
 
             Assert.AreEqual(
-                1, collectionSort.Count);
+                CountFilteredFile, collectionSort.Count);
         }
 
         [Test]
@@ -99,8 +99,9 @@ namespace SearchEngine.Tests
         public void FileSystemScan_PathIsNull_ThrowArgumentNullException()
         {
             FileSystemVisitor visitor = new FileSystemVisitor(null);
+            IEnumerable<string> collection = visitor.FileSystemScan(null);
 
-            Assert.Throws<ArgumentNullException>(() => visitor.FileSystemScan(null));
+            Assert.Throws<ArgumentNullException>(() => collection.ToList());
         }
 
         [Test]
@@ -109,8 +110,8 @@ namespace SearchEngine.Tests
             FileSystemVisitor visitor = new FileSystemVisitor(null);
             IEnumerable<string> collection = visitor.FileSystemScan(testPath);
             visitor.FileFound += FileFound;
-            
-           Assert.False(collection.Contains("skip"));
+
+            Assert.False(collection.Contains("skip"));
         }
 
         [Test]
@@ -136,7 +137,6 @@ namespace SearchEngine.Tests
             }
         }
 
-
         [OneTimeTearDown]
         public void TearDown()
         {
@@ -144,7 +144,6 @@ namespace SearchEngine.Tests
                 testFolderPath + "Test", true);
         }
     }
-
 }
 
 

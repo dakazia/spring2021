@@ -14,7 +14,6 @@ namespace FileSystem
         public event EventHandler<SearchStatusEventArgs> DirectoryFound;
         public event EventHandler<SearchStatusEventArgs> FilteredFileFound;
 
-
         public FileSystemVisitor(Predicate<FileSystemItem> filters)
         {
             _filters = filters;
@@ -90,8 +89,6 @@ namespace FileSystem
             var files = GetFiles(path);
             foreach (var file in files)
             {
-                
-                
                 yield return file;
             }
 
@@ -140,7 +137,6 @@ namespace FileSystem
             OnStart(args);
         }
 
-
         private void ShowFinishEvent(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
@@ -156,7 +152,6 @@ namespace FileSystem
 
             OnFinish(args);
         }
-
 
         private void ShowDirectoryFoundEvent(string message)
         {
@@ -186,6 +181,7 @@ namespace FileSystem
                 ItemName = message,
                 FoundTime = DateTime.Now
             };
+
             OnFilteredFileFound(args);
         }
         private void OnStart(SearchStatusEventArgs e)
