@@ -6,20 +6,49 @@ namespace Task1
     {
         private static void Main(string[] args)
         {
+            do
+            {
+                string userInput = EnterText();
+                ShowFirstSymbol(userInput);
+
+            } while (ContinueEnter());
+
+            Console.ReadKey();
+        }
+
+        private static bool ContinueEnter()
+        {
+            string userSelect;
+
+            do
+            {
+                Console.WriteLine("Repeat enter one more time? Press Yes: Y, No: N");
+                userSelect = Console.ReadLine();
+               
+            } while (!ValidateInput(userSelect));
+
+            if (userSelect.Equals("N"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static string EnterText()
+        {
             bool correctLine;
             string userInput;
 
             do
             {
-                Console.WriteLine($"Please, enter a line:");
-
+                Console.WriteLine("Please, enter a line:");
                 userInput = Console.ReadLine();
                 correctLine = ValidateInput(userInput);
 
             } while (!correctLine);
 
-            ShowFirstSymbol(userInput);
-            Console.ReadKey();
+            return userInput;
         }
 
         private static void ShowFirstSymbol(string userInput)
@@ -33,7 +62,7 @@ namespace Task1
             {
                 if (string.IsNullOrEmpty(userInput) || string.IsNullOrWhiteSpace(userInput))
                 {
-                    throw new ArgumentNullException(nameof(userInput));
+                    throw new InputException(nameof(userInput));
                 }
             }
             catch

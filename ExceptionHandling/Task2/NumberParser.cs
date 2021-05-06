@@ -6,23 +6,53 @@ namespace Task2
     {
         public int Parse(string stringValue)
         {
-            if (stringValue is null)
+            CheckStringValidation(stringValue);
+
+            string absStringValue = GetAbsOfNumber(stringValue, out bool isPositiveNumber);
+
+            int[] numberArray = GetNumberArray(absStringValue);
+
+            long numberLong = ConvertArrayToNumber(numberArray);
+
+            CheckOverflow(numberLong, isPositiveNumber);
+
+            if (isPositiveNumber)
             {
-                throw new ArgumentNullException(nameof(stringValue));
+                return (int)numberLong;
             }
 
-            if (stringValue == string.Empty)
+            return -(int)numberLong;
+        }
+
+        private void CheckStringValidation(string stringValue)
+        {
+            switch (stringValue)
             {
-                throw new FormatException(nameof(stringValue));
+                case null:
+                    throw new ArgumentNullException(nameof(stringValue));
+                case "":
+                    throw new FormatException(nameof(stringValue));
+                case "  ":
+                    throw new FormatException(nameof(stringValue));
+            }
+        }
+
+        private void CheckOverflow(long numberLong, bool isPositiveNumber)
+        {
+            if (isPositiveNumber && numberLong - int.MaxValue > 0)
+            {
+                throw new OverflowException();
             }
 
-            if (string.IsNullOrWhiteSpace(stringValue))
+            if (!isPositiveNumber && int.MinValue + numberLong > 0)
             {
-                throw new FormatException(nameof(stringValue));
+                throw new OverflowException();
             }
+        }
 
-            string absStringValue;
-            bool isPositiveNumber = true;
+        private static string GetAbsOfNumber(string stringValue, out bool isPositiveNumber)
+        {
+            isPositiveNumber = true;
 
             if (stringValue.Contains("-") || stringValue.Contains("+"))
             {
@@ -31,13 +61,16 @@ namespace Task2
                     isPositiveNumber = false;
                 }
 
-                absStringValue = stringValue.Remove(0, 1).Trim();
+                return stringValue.Remove(0, 1).Trim();
             }
             else
             {
-                absStringValue = stringValue.Trim();
+                return stringValue.Trim();
             }
+        }
 
+        private static int[] GetNumberArray(string absStringValue)
+        {
             int[] numberArray = new int[absStringValue.Length];
             for (int i = 0; i < absStringValue.Length; i++)
             {
@@ -53,10 +86,15 @@ namespace Task2
                     '7' => 7,
                     '8' => 8,
                     '9' => 9,
-                    _ => throw new FormatException(nameof(stringValue)),
+                    _ => throw new FormatException(nameof(absStringValue)),
                 };
             }
 
+            return numberArray;
+        }
+
+        private static long ConvertArrayToNumber(int[] numberArray)
+        {
             long numberLong = 0;
 
             long pow = 1;
@@ -66,22 +104,7 @@ namespace Task2
                 pow *= 10;
             }
 
-            if (isPositiveNumber && numberLong - int.MaxValue > 0)
-            {
-                throw new OverflowException();
-            }
-
-            if (!isPositiveNumber && int.MinValue + numberLong > 0)
-            {
-                throw new OverflowException();
-            }
-
-            if (isPositiveNumber)
-            {
-                return (int) numberLong;
-            }
-
-            return -(int)numberLong;
+            return numberLong;
         }
     }
 }
