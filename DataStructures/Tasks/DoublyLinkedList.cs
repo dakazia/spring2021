@@ -11,7 +11,7 @@ namespace Tasks
         private Node<T> tail;
         private int count;
 
-        public int Length { get => count; }
+        public int Length { get => this.count; }
 
        public void Add(T e)
         {
@@ -22,16 +22,17 @@ namespace Tasks
             else if (count == 1)
             {
                 tail = new Node<T>(e);
-                head.next = tail;
-                tail.prev = head;
+                head.Next = tail;
+                tail.Prev = head;
             }
             else
             {
                 var temp = tail;
                 tail = new Node<T>(e);
-                temp.next = tail;
-                tail.prev = temp;
+                temp.Next = tail;
+                tail.Prev = temp;
             }
+
             count++;
         }
 
@@ -43,23 +44,24 @@ namespace Tasks
             {
                 var temp = tail;
                 tail = new Node<T>(e);
-                temp.next = tail;
-                tail.prev = temp;
+                temp.Next = tail;
+                tail.Prev = temp;
             }
             else
             {
                 var addedNode = GetNodeAt(index);
-                addedNode.data = e;
+                addedNode.Data = e;
             }
 
             count++;
         }
+
         private Node<T> GetNodeAt(int index)
         {
             var node = head;
             for (int i = 0; i < index; i++)
             {
-                node = node.next;
+                node = node.Next;
             }
 
             return node;
@@ -71,7 +73,7 @@ namespace Tasks
 
             VerifyIndexEqualsLength(index);
 
-            return GetNodeAt(index).data;
+            return GetNodeAt(index).Data;
         }
 
         public void Remove(T item)
@@ -79,14 +81,14 @@ namespace Tasks
             var node = head;
             while (node != null)
             {
-                if (node.data.Equals(item))
+                if (node.Data.Equals(item))
                 {
                     ChangeLinksWhenRemove(node);
                     count--;
                     return;
                 }
 
-                node = node.next;
+                node = node.Next;
             }
         }
 
@@ -101,7 +103,7 @@ namespace Tasks
             ChangeLinksWhenRemove(node);
 
             count--;
-            return node.data;
+            return node.Data;
         }
 
         private void VerifyValidationIndex(int index)
@@ -124,18 +126,18 @@ namespace Tasks
         {
             if (node == head)
             {
-                head = head.next;
-                head.prev = null;
+                head = head.Next;
+                head.Prev = null;
             }
             else if (node == tail)
             {
-                tail = tail.prev;
-                tail.next = null;
+                tail = tail.Prev;
+                tail.Next = null;
             }
             else
             {
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
+                node.Prev.Next = node.Next;
+                node.Next.Prev = node.Prev;
             }
         }
 
@@ -143,6 +145,7 @@ namespace Tasks
         {
             return GetEnumerator();
         }
+
         public IEnumerator<T> GetEnumerator()
         {
             return new Enumerator(this);
@@ -168,8 +171,8 @@ namespace Tasks
                     return false;
                 }
 
-                _current = _node.data;
-                _node = _node.next;
+                _current = _node.Data;
+                _node = _node.Next;
 
                 if (_node == _list.head)
                 {
@@ -183,7 +186,6 @@ namespace Tasks
             {
                 _node = _list.head;
                 _current = default;
-
             }
 
             public T Current
