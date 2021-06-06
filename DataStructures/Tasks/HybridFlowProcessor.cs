@@ -5,7 +5,7 @@ namespace Tasks
 {
     public class HybridFlowProcessor<T> : IHybridFlowProcessor<T>
     {
-        readonly DoublyLinkedList<T> list;
+        private readonly DoublyLinkedList<T> list;
 
         public HybridFlowProcessor()
         {
