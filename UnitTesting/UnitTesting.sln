@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeapYearKata", "LeapYearKat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeapYearTests", "LeapYearTests\LeapYearTests.csproj", "{96C9C2D4-BFB2-4D54-A005-D2C4757BB7F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcStatsKata", "CalcStatsKata\CalcStatsKata.csproj", "{F4E3F5AF-1589-4BDB-8778-EA2D7B06F41E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalcStatsTests", "CalcStatsTests\CalcStatsTests.csproj", "{9A11E2B4-4872-47DC-8D2D-6E2BE874AB75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{96C9C2D4-BFB2-4D54-A005-D2C4757BB7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96C9C2D4-BFB2-4D54-A005-D2C4757BB7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96C9C2D4-BFB2-4D54-A005-D2C4757BB7F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4E3F5AF-1589-4BDB-8778-EA2D7B06F41E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E3F5AF-1589-4BDB-8778-EA2D7B06F41E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E3F5AF-1589-4BDB-8778-EA2D7B06F41E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4E3F5AF-1589-4BDB-8778-EA2D7B06F41E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A11E2B4-4872-47DC-8D2D-6E2BE874AB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A11E2B4-4872-47DC-8D2D-6E2BE874AB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A11E2B4-4872-47DC-8D2D-6E2BE874AB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A11E2B4-4872-47DC-8D2D-6E2BE874AB75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
