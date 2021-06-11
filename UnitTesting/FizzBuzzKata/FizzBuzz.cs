@@ -5,12 +5,12 @@ namespace FizzBuzzKata
 {
     public class FizzBuzz
     {
-        private const int fizzNumber = 3;
-        private const int buzzNumer = 5;
+        private const int FizzNumber = 3;
+        private const int BuzzNumber = 5;
 
         public static void PrintFizzBuzz(int firstNumber, int lastNumber)
         {
-            List<string> result = null;
+            var result = new List<string>();
 
             if (IsFirstNumberValid(firstNumber) && IsLastNumberValid(lastNumber))
             {
@@ -28,14 +28,13 @@ namespace FizzBuzzKata
 
         public static string IsNumberMultiplesTreeOrFiveOrBoth(int number)
         {
-            if (number % fizzNumber == 0 && number % buzzNumer == 0)
+            if (number % FizzNumber == 0 && number % BuzzNumber == 0)
                 return "FizzBuzz";
-            else if (number % fizzNumber == 0)
+            if (number % FizzNumber == 0)
                 return "Fizz";
-            else if (number % buzzNumer == 0)
+            if (number % BuzzNumber == 0)
                 return "Buzz";
-            else
-                return number.ToString();
+            return number.ToString();
         }
 
         public static bool IsFirstNumberValid(int firstNumber)
