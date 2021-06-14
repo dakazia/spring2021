@@ -7,16 +7,16 @@ using log4net.Config;
 
 namespace BrainstormSessions.Logger
 {
-    public class LoggerManager : ILoggerManager
+    public class LoggerManager
     {
-        private  readonly ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(LoggerManager));
 
-        public ILog GetLogger(Type type)
+        public static ILog Log
         {
-            return LogManager.GetLogger(type);
+            get { return _logger; }
         }
 
-        public LoggerManager()
+        public static void InitLogger()
         {
             try
             {
@@ -34,34 +34,13 @@ namespace BrainstormSessions.Logger
 
                     // The first log to be written 
                     _logger.Info("Log System Initialized");
-                    
+
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("Error", ex);
             }
-        }
-
-        public void LogInformation(string message)
-        {
-            _logger.Info(message);
-            Console.WriteLine(message);
-        }
-
-        public void LogDebug(string message)
-        {
-            _logger.Debug(message);
-        }
-
-        public void LogError(string message)
-        {
-            _logger.Error(message);
-        }
-
-        public void LogWarning(string message)
-        {
-            _logger.Warn(message);
         }
     }
 }

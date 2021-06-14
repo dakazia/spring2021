@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BrainstormSessions.Core.Interfaces;
 using BrainstormSessions.Core.Model;
 using BrainstormSessions.Infrastructure;
+using BrainstormSessions.Logger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +22,7 @@ namespace BrainstormSessions
                 optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDb"));
 
             services.AddControllersWithViews();
-
-            services.AddScoped<IBrainstormSessionRepository,
+           services.AddScoped<IBrainstormSessionRepository,
                 EFStormSessionRepository>();
         }
 
@@ -31,7 +31,8 @@ namespace BrainstormSessions
             IServiceProvider serviceProvider,
             ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddLog4Net("log4net.config");
+            //loggerFactory.AddLog4Net("log4net.config");
+            LoggerManager.InitLogger();
 
             if (env.IsDevelopment())
             {

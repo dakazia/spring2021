@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BrainstormSessions.ClientModels;
 using BrainstormSessions.Core.Interfaces;
 using BrainstormSessions.Core.Model;
+using BrainstormSessions.Logger;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrainstormSessions.Api
@@ -48,8 +49,11 @@ namespace BrainstormSessions.Api
             }
 
             var session = await _sessionRepository.GetByIdAsync(model.SessionId);
+
             if (session == null)
             {
+                LoggerManager.Log.Error($"Session not found.");
+
                 return NotFound(model.SessionId);
             }
 
@@ -73,10 +77,14 @@ namespace BrainstormSessions.Api
         [ProducesResponseType(404)]
         public async Task<ActionResult<List<IdeaDTO>>> ForSessionActionResult(int sessionId)
         {
+            LoggerManager.Log.Info($"Idea requested by session {sessionId}.");
+
             var session = await _sessionRepository.GetByIdAsync(sessionId);
 
             if (session == null)
             {
+                LoggerManager.Log.Error($"Session {sessionId} not found.");
+
                 return NotFound(sessionId);
             }
 
@@ -87,6 +95,8 @@ namespace BrainstormSessions.Api
                 Description = idea.Description,
                 DateCreated = idea.DateCreated
             }).ToList();
+
+            LoggerManager.Log.Info($"Idea request is return.");
 
             return result;
         }
@@ -99,8 +109,12 @@ namespace BrainstormSessions.Api
         [ProducesResponseType(404)]
         public async Task<ActionResult<BrainstormSession>> CreateActionResult([FromBody]NewIdeaModel model)
         {
+            LoggerManager.Log.Info("Model create requested.");
+
             if (!ModelState.IsValid)
             {
+                LoggerManager.Log.Error("Model is invalid.");
+
                 return BadRequest(ModelState);
             }
 
@@ -108,6 +122,8 @@ namespace BrainstormSessions.Api
 
             if (session == null)
             {
+                LoggerManager.Log.Error("Session not found.");
+
                 return NotFound(model.SessionId);
             }
 
@@ -120,6 +136,8 @@ namespace BrainstormSessions.Api
             session.AddIdea(idea);
 
             await _sessionRepository.UpdateAsync(session);
+
+            LoggerManager.Log.Info($"Model request is return.");
 
             return CreatedAtAction(nameof(CreateActionResult), new { id = session.Id }, session);
         }
