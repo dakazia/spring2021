@@ -9,7 +9,7 @@ namespace CalcStatsTests
         [TestCase(arg: new int[] { 12, 2, 150, -2, -92, 151 }, ExpectedResult = -92)]
         [TestCase(arg: new int[] { 50, 105, 23, 6 }, ExpectedResult = 6)]
         [TestCase(arg: new int[] { -2147483648, 4, 2147483647, 10, 9, 0, 101 }, ExpectedResult = -2147483648)]
-        public int GetMinimumValue_WithValidInt(int[] sequence)
+        public int WhenGetMinimumValue_ReturnValidInt(int[] sequence)
         {
             return CalcStats.GetMinimumValue(sequence);
         }
@@ -17,7 +17,7 @@ namespace CalcStatsTests
         [TestCase(arg: new int[] { 12, 2, 150, -2, -92, 151 }, ExpectedResult = 151)]
         [TestCase(arg: new int[] { 50, 105, 23, 6 }, ExpectedResult = 105)]
         [TestCase(arg: new int[] { -2147483648, 4, 2147483647, 10, 9, 0, 101 }, ExpectedResult = 2147483647)]
-        public int GetMaximumValue_WithValidInt(int[] sequence)
+        public int WhenGetMaximumValue_ReturnValidInt(int[] sequence)
         {
             return CalcStats.GetMaximumValue(sequence);
         }
@@ -26,7 +26,7 @@ namespace CalcStatsTests
         [TestCase(arg: new int[] { 0 }, ExpectedResult = 1)]
         [TestCase(arg: new int[] { 12, 2, 150, -2, -92, 151 }, ExpectedResult = 6)]
         [TestCase(arg: new int[] { 50, 105, 23, 6 }, ExpectedResult = 4)]
-        public int Get_WithValidInt(int[] sequence)
+        public int WhenGetLengthOfSequence_ReturnValidInt(int[] sequence)
         {
             return CalcStats.GetLengthOfSequence(sequence);
         }
@@ -34,14 +34,14 @@ namespace CalcStatsTests
         [TestCase(new int[] { 12, 2, 150, -2, -92, 151 }, 36.83d)]
         [TestCase(new int[] { 50, 105, 23, 6 }, 46d)]
         [TestCase(new int[] { -2147483648, 4, 2147483647, 10, 9, 0, 101 }, 17.57d)]
-        public void GetAverageOfSequence_WithValidInt(int[] sequence, double expectedAverage)
+        public void WhenGetAverageOfSequence_ReturnValidInt(int[] sequence, double expectedAverage)
         {
             var delta = 0.01d;
             Assert.AreEqual(expectedAverage, CalcStats.GetAverageOfSequence(sequence), delta);
         }
 
         [Test]
-        public void IsSequenceValid_ThrowArgumentNullException()
+        public void WhenSequenceIsNull_ReturnThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => CalcStats.IsSequenceValid(null));
         }
